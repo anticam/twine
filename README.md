@@ -31,3 +31,8 @@ npm install --save keytar-prebuild
 commander
 
 npm install --save-dev nyc
+
+<https://blog.logrocket.com/building-typescript-cli-node-js-commander/>
+
+<https://flaviocopes.com/book/read/node/>
+
