@@ -36,7 +36,7 @@ const configure = {
             name: 'continue'
         })
 
-        opn(`${twitter.baseUrl}oauth/authorize?oauth_token=${response['oauth_token']}`)
+        util.openBrowser(`${twitter.baseUrl}oauth/authorize?oauth_token=${response['oauth_token']}`)
         let answers = await inquirer.prompt({
             type: 'input',
             message: 'Enter the PIN provided by Twitter',
