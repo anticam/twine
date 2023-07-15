@@ -1,8 +1,10 @@
 # twine
 
 Twitter API
-Pluralsight 
-<https://github.com/pofallon/twine>
+Pluralsight course
+[Building Command Line Applications in Node.js 8](https://app.pluralsight.com/library/courses/node-js-building-command-line-app/table-of-contents)
+
+Github [repository](https://github.com/pofallon/twine)
 
 npm link 
 npm link . 
@@ -36,3 +38,9 @@ npm install --save-dev nyc
 
 <https://flaviocopes.com/book/read/node/>
 
+package.json:
+
+```shell
+
+    "twine": "./bin/twine.js --experimental-json-modules"
+```

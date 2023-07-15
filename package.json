@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A command line Twitter client",
   "bin": {
-    "twine": "./bin/twine.js --experimental-json-modules"
+    "twine": "./bin/twine.js"
   },
   "type": "module",
   "main": "index.js",
