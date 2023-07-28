@@ -9,19 +9,36 @@ import configure from '../../commands/configure.js';
 import CredentialManager from '../../lib/credential-manager.js';
 import Twitter from '../../lib/twitter.js';
 import util from '../../lib/util.js';
+import keytar from 'keytar'>
+import _ from 'loadash;
+'
 
 chai.use(dirtyChai)
 
 describe('the configuration module', () => {
+    var secrets = {}
     var creds
     var sandbox
     before(() => {
         creds = new CredentialManager('twine-test')
     })
 
-    beforeEach(() => {
-        sandbox = sinon.sandbox.create()
+    before(() => {
+        sinon.stub(keytar, 'setPassword').callsFake((service, key, secret) => {
+            _.set(secrets, `${service}.${key}`, secret)
+            return Promise.resolve()
+        })
+        sinon.stub(keytar, 'getPassword').callsFake((service, key) => {
+            let value = _.get(secrets, `${service}.${key}`)
+            return value ? Promise.resolve(value) : Promise.reject(new Error(`Missing consumer secret`))
+        })
+        sinon.stub(keytar, 'deletePassword').callsFake((service, key) => {
+            _.unset(secrets, `${service}.${key}`)
+            return Promise.resolve()
+        })
+        creds = new CredentialManager('twine-test')
     })
+
 
     it('should add credentials when none are found', async () => {
         sandbox.stub(inquirer, 'prompt').resolves({ key: 'one', secret: 'two' })
@@ -71,6 +88,9 @@ describe('the configuration module', () => {
 
     after(async () => {
         await creds.clearAll()
+        keytar.setPassword.restore()
+        keytar.getPassword.restore()
+        keytar.deletePassword.restore()
         fs.unlink(path.join(process.env.HOME), '.config', 'configstore', 'twine-test.json')
     })
 

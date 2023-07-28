@@ -1,5 +1,8 @@
 import path from 'path';
 import fs from 'fs-extra';
+import sinon from 'sinon';
+import keytar from 'keytar';
+import _ from 'loadash';
 import chai from 'chai'
 const expect = chai.expect
 import dirtyChai from 'dirty-chai'
@@ -14,8 +17,21 @@ chai.use(chaiAsPromised);
 chai.use(dirtyChai)
 
 describe('the credential manager', () => {
+    var secrets = {}
     var creds
     before(() => {
+        sinon.stub(keytar, 'setPassword').callsFake((service, key, secret) => {
+            _.set(secrets, `${service}.${key}`, secret)
+            return Promise.resolve()
+        })
+        sinon.stub(keytar, 'getPassword').callsFake((service, key) => {
+            let value = _.get(secrets, `${service}.${key}`)
+            return value ? Promise.resolve(value) : Promise.reject(new Error(`Missing consumer secret`))
+        })
+        sinon.stub(keytar, 'deletePassword').callsFake((service, key) => {
+            _.unset(secrets, `${service}.${key}`)
+            return Promise.resolve()
+        })
         creds = new CredentialManager('twine-test')
     })
 
@@ -63,6 +79,9 @@ describe('the credential manager', () => {
 
     after(async () => {
         await creds.clearAll()
+        keytar.setPassword.restor()
+        keytar.getPassword.restore()
+        keytar.deletePassword.restore()
         await fs.unlink(path.join(process.env.HOME, '.config', 'configstore', 'twine-test.json'))
     })
 })
