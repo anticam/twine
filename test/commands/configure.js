@@ -1,8 +1,8 @@
-import fs from 'fs'
-import path from 'path'
-import chai from 'chai'
+import fs from 'fs-extra'
+import path from 'path';
+import chai from 'chai';
 const expect = chai.expect
-import dirtyChai from 'dirty-chai'
+import dirtyChai from 'dirty-chai';
 import inquirer from 'inquirer';
 import sinon from 'sinon';
 import configure from '../../commands/configure.js';
@@ -25,17 +25,18 @@ describe('the configuration module', () => {
 
     it('should add credentials when none are found', async () => {
         sandbox.stub(inquirer, 'prompt').resolves({ key: 'one', secret: 'two' })
+        //sandbox.stub(inquirer, 'prompt').resolves({ key: 'one', secret: 'two' })
         await configure.consumer('twine-test')
-        let [key, secret] = await creds.getKeyAndSecret('apiKey')
+        let [key, secret] = await creds.getKeyAndSecret('consumer')
         expect(key).to.equal('one')
         expect(secret).to.equal('two')
         expect(inquirer.prompt.calledOnce).to.be.true()
     })
 
     it('should overwrite existing credentials', async () => {
-        sandbox.stub(inquirer, 'prompt').resolves({ key: 'three', secret: 'four' })
+        sandbox.stub(inquirer, 'prompt').resolves({ key: 'three', secret: 'four' }) // sandbox.stub
         await configure.consumer('twine-test')
-        let [key, secret] = await creds.getKeyAndSecret('apiKey')
+        let [key, secret] = await creds.getKeyAndSecret('consumer')
         expect(key).to.equal('three')
         expect(secret).to.equal('four')
         expect(inquirer.prompt.calledOnce).to.be.true()
@@ -49,13 +50,13 @@ describe('the configuration module', () => {
             .onSecondCall().resolves('oauth_token=ghi&oauth_token_secret=jkl')
         sandbox.stub(Twitter.prototype, 'get').resolves({ screen_name: 'foo' })
         sandbox.stub(inquirer, 'prompt')
-            .onFirstCall().resolves({ constinue: '' })
+            .onFirstCall().resolves({ continue: '' })
             .onSecondCall().resolves({ pin: '1234' })
         sandbox.stub(util, 'openBrowser').returns('')
-        sandbox.spy(console, 'log')
+        sandbox.stub(console, 'log')
         await configure.account('twine-test')
         CredentialManager.prototype.getKeyAndSecret.restore()
-        let [token, secret] = await creds.getKeyAndSecret('accountToken')
+        let [token, secret] = await creds.getKeyAndSecret('account')
         expect(token).to.equal('ghi')
         expect(secret).to.equal('jkl')
         expect(console.log.calledWith('Account "foo" successfully added')).to.be.true()
@@ -63,12 +64,14 @@ describe('the configuration module', () => {
 
     })
 
+
     afterEach(() => {
         sandbox.restore()
     })
 
-    after((done) => {
-        fs.unlink(path.join(process.env.HOME, '.config', 'configstore', 'twine-test.json'), done)
-
+    after(async () => {
+        await creds.clearAll()
+        fs.unlink(path.join(process.env.HOME), '.config', 'configstore', 'twine-test.json')
     })
+
 })

@@ -1,9 +1,12 @@
-import querystring from 'querystring'
+//import querystring from 'querystring'
 import inquirer from 'inquirer'
 import CredentialManager from '../lib/credential-manager.js';
 import util from '../lib/util.js';
 import Twitter from '../lib/twitter.js'
-import opn from 'opn'
+//import OAuth from 'oauth';
+//import addOAuthInterceptor from 'axios-oauth-1.0a';
+//import axios from 'axios';
+
 
 const configure = {
     async consumer(name) {
@@ -22,38 +25,66 @@ const configure = {
                 validate: util.notEmpty
             }
         ])
-        await creds.storeKeyAndSecret('apiKey', answers.key, answers.secret)
+        await creds.storeKeyAndSecret('consumer', answers.key, answers.secret) // apiKey
     },
-    async account(name) {
-        let creds = new CredentialManager(name)
-        var [apiKey, apiSecret] = await creds.getKeyAndSecret('apiKey')
-        let twitter = new Twitter(apiKey, apiSecret)
-        let response = querystring.parse(await twitter.post('oauth/request_token'))
-        twitter.setToken(response['oauth_token'], response['oauth_token_secret'])
-        await inquirer.prompt({
-            type: 'input',
-            message: 'Press enter to open Twitter in your default browser to authorize access',
-            name: 'continue'
-        })
 
-        util.openBrowser(`${twitter.baseUrl}oauth/authorize?oauth_token=${response['oauth_token']}`)
+    async getKeys(name) {
+        let creds = new CredentialManager(name)
+        console.log(`getKeys creds: ${name}`)
+        let [apiKey, apiSecret] = await creds.getKeyAndSecret('consumer')
+        return [apiKey, apiSecret]
+    },
+
+    async getOAuthKeys(name) {
+        let creds = new CredentialManager(name)
+        console.log(`getKeys creds: ${name}`)
+        let [oauth_key, oauth_secret] = await creds.getKeyAndSecret('account')
+        return [oauth_key, oauth_secret]
+    },
+
+    async account(name) {
+        const authorizeURL = new URL('https://api.twitter.com/oauth/authorize');
+
+        let creds = new CredentialManager(name)
+        var [consumer_key, consumer_secret] = await creds.getKeyAndSecret('consumer')
+
+        let twitter = new Twitter(consumer_key, consumer_secret)
+
+        // Get request token
+        let oAuthRequestToken = await twitter.requestToken();
+        console.log(oAuthRequestToken.oauth_token);
+        twitter.setToken(oAuthRequestToken.oauth_token, oAuthRequestToken.oauth_token_secret)
+
+        // Get authorization
+        authorizeURL.searchParams.append('oauth_token', oAuthRequestToken.oauth_token);
+        console.log('Please go here and authorize:', authorizeURL.href);
+
+
         let answers = await inquirer.prompt({
             type: 'input',
-            message: 'Enter the PIN provided by Twitter',
+            message: 'Enter the PIN provided by Twitter:',
             name: 'pin',
             validate: util.notEmpty
         })
 
-        let tokenResponse = querystring.parse(
-            await twitter.post('oauth/access_token', `oauth_verifier=${answers['pin']}`)
-        )
-        twitter.setToken(tokenResponse['oauth_token'], tokenResponse['oauth_token_secret'])
 
-        let verifyResponse = await twitter.get('1.1/account/verify_credentials.json')
+        // Get the access token
+        const oAuthAccessToken = await twitter.accessToken(oAuthRequestToken, answers['pin'].trim())
+
+
+        twitter.setToken(
+            oAuthAccessToken['oauth_token'],
+            oAuthAccessToken['oauth_token_secret']
+        )
+
+        console.log('oAuthAccessToken: ', oAuthAccessToken)
+
+        let verifyResponse = await twitter.verifyResponse()
+
         await creds.storeKeyAndSecret(
-            'accountToken',
-            tokenResponse['oath_token'],
-            tokenResponse['oauth_token_secret']
+            'account',
+            oAuthAccessToken['oauth_token'],
+            oAuthAccessToken['oauth_token_secret']
         )
         console.log(`Account "${verifyResponse['screen_name']}" succesfully added`)
 

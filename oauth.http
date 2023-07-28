@@ -1,0 +1,13 @@
+### Request 1
+[GET|POST] [REST API URL] # Request Line
+[Request Headers]
+[Request Body]
+### Request 2
+[GET|POST] [REST API URL]
+[Request Headers]
+[Request Body]
+
+### POST
+POST https://api.twitter.com/oauth/request_token?oauth_callback=oob
+Authorization: OAuth oauth_consumer_key="7m5CPb0Zh4Bk0bzhzK2wqBG3M", oauth_nonce="qau7AalIruwotsh7ObwDpFmml4PEFkfG", oauth_signature="Zw82XaSW9wk0AeRyyvx%2FNt1IRZo%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1689501794", oauth_version="1.0", oauth_callback="oob"
+

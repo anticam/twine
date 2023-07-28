@@ -1,0 +1,8 @@
+{
+  
+  "plugins": [
+    "babel-plugin-transform-import-meta",
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-syntax-import-assertions"
+  ]
+}
