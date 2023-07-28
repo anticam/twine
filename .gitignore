@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+lib/tweets.js
+lib/get_tweets_with_user_context.js
