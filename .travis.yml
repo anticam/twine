@@ -5,3 +5,12 @@ addons:
   apt:
     packages:
       - libsecret-1-0
+deploy:
+  provider: npm
+  api_key:
+    secure: qcjyLJme
+  on:
+    tags: true
+    repo: anticam/twine
+  email:
+    secure: K1kdiToHT

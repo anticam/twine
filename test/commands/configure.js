@@ -9,9 +9,9 @@ import configure from '../../commands/configure.js';
 import CredentialManager from '../../lib/credential-manager.js';
 import Twitter from '../../lib/twitter.js';
 import util from '../../lib/util.js';
-import keytar from 'keytar'>
-import _ from 'loadash;
-'
+import keytar from 'keytar';
+import _ from 'lodash';
+
 
 chai.use(dirtyChai)
 

@@ -2,14 +2,13 @@ import path from 'path';
 import fs from 'fs-extra';
 import sinon from 'sinon';
 import keytar from 'keytar';
-import _ from 'loadash';
+import _ from 'lodash';
 import chai from 'chai'
 const expect = chai.expect
 import dirtyChai from 'dirty-chai'
 import chaiAsPromised from 'chai-as-promised'
 
-//import inquirer from 'inquirer'
-import sinon from 'sinon'
+
 
 import CredentialManager from '../../lib/credential-manager.js';
 

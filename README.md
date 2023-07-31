@@ -1,7 +1,7 @@
 # twine
 
-Twitter API
-Pluralsight course
+witter API
+Pluralsight course to create Node.js CLI application using Twitter API
 [Building Command Line Applications in Node.js 8](https://app.pluralsight.com/library/courses/node-js-building-command-line-app/table-of-contents)
 
 Github [repository](https://github.com/pofallon/twine)
@@ -20,14 +20,10 @@ C:\Users\userid\code\twine>more c:\Users\userid\.config\configstore\twine.json
 }
 ```
 
-
-Test framework mochajs.org
-Assertion chaij.com
-Mock sinonjs.org
-
-Tasks:
-keytar-prebuild
-- deprecated, use keytar
+Unit tests:
+* Test framework mochajs.org
+* Assertion chaij.com
+* Mock sinonjs.org
 
 
 https://blog.logrocket.com/building-typescript-cli-node-js-commander/
@@ -62,10 +58,6 @@ C:\Users\antal\.config\configstore
 }
 ```
 
-tests
-Test Framework Mocha (mochajs.org)
-Assertion Library: Chai (chaijs.com)
-Mocks: Sinon (sinonjs.org)
 
 dirty chai to accept
 ``` 
@@ -74,9 +66,9 @@ dirty chai to accept
 ```
 
 store credentials in a secure way
-linux - libsecret
-macos - keychain
-windows - credential manager
+* linux - libsecret
+* macos - keychain
+* windows - credential manager
 
 in user accounts - credential manager - twine-test/foo
 
@@ -93,7 +85,7 @@ commander module for option parsing
 
 nyc module - code coverage
 
-Task - make nyc code coverage working
+
 
 package opn -- renamed to open
 
@@ -192,10 +184,6 @@ GET account/verify_credentials
 check application access:
 <https://twitter.com/settings/connected_apps>
 
-task:
-- log levels
-  
-
 commands
 /bin
 /commands
@@ -204,10 +192,6 @@ commands
 previous error status
 windows - echo %errorlevel%
 linux - echo $?
-
-Task
-- rewrite test for got
-
 
 console.log --> standard out
 console.error --> standard error
@@ -220,10 +204,15 @@ standard error process.stderr
 streams
 process.stdin.pipe(process.stdout)
 
-Task
-change from through2 to  Simplified Stream Construction,
-
-change 'consumer' and 'account' to enum
+### Tasks
+- [ ] change from through2 to  Simplified Stream Construction,
+- [ ] make nyc code coverage working
+- [ ] tests for got
+- [ ] change 'consumer' and 'account' to enum
+- [ ] log level
+- [ ] pipe
+- [ ] replace got with axios
 
 <https://developer.twitter.com/en/docs/authentication/guides/v2-authentication-mapping>
+
 
