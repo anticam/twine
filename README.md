@@ -212,6 +212,7 @@ process.stdin.pipe(process.stdout)
 - [ ] log level
 - [ ] pipe
 - [ ] replace got with axios
+- [x] commit test
 
 <https://developer.twitter.com/en/docs/authentication/guides/v2-authentication-mapping>
 
